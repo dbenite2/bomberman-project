@@ -1,21 +1,16 @@
 #include <SFML/Graphics.hpp>
+#include "game.h"
 
 int main()
 {
+    Game* game = new Game();
     auto window = sf::RenderWindow{ { 1920u, 1080u }, "CMake SFML Project" };
     window.setFramerateLimit(144);
-
-    while (window.isOpen())
+    sf::Clock clock;
+    while (game -> ExitGame() == false)
     {
-        for (auto event = sf::Event{}; window.pollEvent(event);)
-        {
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
-            }
-        }
-
-        window.clear();
-        window.display();
+        sf::Time elapsed = clock.restart();
+        game->Update(elapsed.asMilliseconds());
+        game->Render(window);
     }
 }
