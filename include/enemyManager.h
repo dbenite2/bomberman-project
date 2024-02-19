@@ -1,6 +1,6 @@
 #pragma once
-#include "enemy.h";
 #include <vector>
+#include "enemy.h"
 
 class EnemyManager {
 public:

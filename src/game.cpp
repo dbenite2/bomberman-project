@@ -1,18 +1,28 @@
-#include "game.h";
+#include "game.h"
 
-void Game::Update(const float& deltaMS) {
-	m_enemyManager->Update(deltaMS);
-	m_playerManager->Update(deltaMS);
-	m_sceneteManager->Update(deltaMS);
+Game::Game() {
+	// Initialization of managers and game state
+	if(!m_assetManager.LoadTexture("player", "../assets/player/player.png")) {
+		throw std::runtime_error("Failed to load player texture");
+	}
+	m_playerManager = std::make_unique<PlayerManager>(m_assetManager.GetTexture("player"));
+	m_enemyManager = std::make_unique<EnemyManager>();
+	m_sceneManager = std::make_unique<SceneManager>();
+	m_gameExit = false;
 }
 
-void Game::Render(sf::RenderWindow& renderWindow) {
-	// TODO: set render stuff here
+void Game::Update(const float& deltaTime) const {
+	// m_enemyManager->Update(deltaTime);
+	m_playerManager->Update(deltaTime);
+	// m_sceneManager->Update(deltaTime);
+}
+
+void Game::Render(sf::RenderWindow& renderWindow) const {
 	renderWindow.clear();
-	// managersRenders
+	m_playerManager->Render(renderWindow);
 	renderWindow.display();
 }
 
-bool Game::ExitGame() {
+bool Game::ExitGame() const {
 	return m_gameExit;
 }

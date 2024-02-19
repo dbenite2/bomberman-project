@@ -1,9 +1,15 @@
 #pragma once
+#include <SFML/Graphics.hpp>
+#include <memory>
 #include "player.h"
 
 class PlayerManager {
 public:
-	void Update(const float& deltaMS);
+	PlayerManager(const sf::Texture& texture);
+	~PlayerManager() = default;
+	void Update(const float& deltaTime) const;
+	void Render(sf::RenderWindow& renderWindow) const;
+	void HandleInput(const float& deltaTime) const;
 private:
-	Player* m_player;
+	std::unique_ptr<Player>m_player;
 };

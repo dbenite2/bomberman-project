@@ -1,17 +1,21 @@
 #pragma once
-#include "enemyManager.h";
-#include "playerManager.h";
-#include "sceneManager.h";
 #include <SFML/Graphics.hpp>
+#include "enemyManager.h"
+#include "playerManager.h"
+#include "sceneManager.h"
+#include "assetManager.h"
 
 class Game {
 public:
-	void Update(const float& deltaMS);
-	void Render(sf::RenderWindow& renderWindow);
-	bool ExitGame();
+	Game();
+	~Game();
+	void Update(const float& deltaTime) const;
+	void Render(sf::RenderWindow& renderWindow) const;
+	bool ExitGame() const;
 private:
-	EnemyManager* m_enemyManager{ nullptr };
-	PlayerManager* m_playerManager{ nullptr };
-	SceneManager* m_sceneteManager{ nullptr };
+	AssetManager m_assetManager;
+	std::unique_ptr<PlayerManager> m_playerManager{nullptr};
+	std::unique_ptr<EnemyManager> m_enemyManager{nullptr};
+	std::unique_ptr<SceneManager> m_sceneManager{nullptr};
 	bool m_gameExit{ false };
 };

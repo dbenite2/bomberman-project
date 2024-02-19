@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(BombermanProject VERSION 0.0.1 LANGUAGES CXX)
 
-set(PROJECT_HEADERS 
+set(PROJECT_HEADERS
+    include/assetManager.h
     include/IBasicOperations.h
     include/enemy.h
     include/enemyManager.h
@@ -23,6 +24,7 @@ set(PROJECT_SOURCES
     src/sceneManager.cpp
     src/world.cpp
     src/main.cpp
+    src/assetManager.cpp
 )
 
 set(PROJECT_FILES 
