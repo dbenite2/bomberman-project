@@ -12,9 +12,10 @@ void Player::Update(const float& deltaTime) {
 }
 
 void Player::Move(sf::Vector2f direction) {
-	const float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-	if (length != 0.f) {
+	if(direction.x != 0.f || direction.y != 0.f) {
+		const float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 		direction /= length;
+		m_lastDirection = direction;
 	}
 	m_sprite.move(direction * m_speed);
 }
@@ -23,4 +24,10 @@ void Player::Render(sf::RenderWindow& renderWindow) const {
 	renderWindow.draw(m_sprite);
 }
 
+sf::Vector2f Player::GetPosition() const {
+	return m_sprite.getPosition();
+}
 
+sf::Vector2f Player::GetDirection() const {
+	return m_lastDirection;
+}

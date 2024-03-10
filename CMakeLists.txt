@@ -12,6 +12,7 @@ set(PROJECT_HEADERS
     include/scene.h
     include/sceneManager.h
     include/world.h
+    include/bomb
 )
 
 set(PROJECT_SOURCES

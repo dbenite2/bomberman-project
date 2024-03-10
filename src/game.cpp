@@ -5,7 +5,10 @@ Game::Game() {
 	if(!m_assetManager.LoadTexture("player", "../assets/player/player.png")) {
 		throw std::runtime_error("Failed to load player texture");
 	}
-	m_playerManager = std::make_unique<PlayerManager>(m_assetManager.GetTexture("player"));
+	if(!m_assetManager.LoadTexture("bomb", "../assets/player/bomb.png")) {
+		throw std::runtime_error("Failed to load bomb texture");
+	}
+	m_playerManager = std::make_unique<PlayerManager>(m_assetManager.GetTexture("player"), m_assetManager.GetTexture("bomb"));
 	m_enemyManager = std::make_unique<EnemyManager>();
 	m_sceneManager = std::make_unique<SceneManager>();
 	m_gameExit = false;

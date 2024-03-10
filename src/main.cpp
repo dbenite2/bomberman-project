@@ -4,7 +4,7 @@
 int main()
 {
     auto* game = new Game();
-    auto window = sf::RenderWindow{ { 1920u, 1080u }, "Bomberman" };
+    auto window = sf::RenderWindow{ { 800u, 600u }, "Bomberman" };
     window.setFramerateLimit(60);
     sf::Clock clock;
     // while (game -> ExitGame() == false)
