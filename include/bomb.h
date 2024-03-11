@@ -7,6 +7,7 @@ public:
     void Update(float deltaTime);
     void Render(sf::RenderWindow& window) const;
     bool IsExploded() const;
+    sf::FloatRect GetGlobalBounds() const;
 
 private:
     sf::Sprite m_sprite;

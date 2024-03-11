@@ -26,6 +26,10 @@ bool Bomb::IsExploded() const {
     return m_exploded;
 }
 
+sf::FloatRect Bomb::GetGlobalBounds() const {
+    return m_sprite.getGlobalBounds();
+}
+
 void Bomb::explode() {
     m_exploded = true;
 }

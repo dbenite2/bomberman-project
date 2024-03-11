@@ -17,4 +17,5 @@ private:
 	std::vector<Bomb> m_bombs;
 
 	void PlaceBomb();
+	bool isCollidingWithBombs(const sf::Vector2f& newPosition, const sf::FloatRect& playerBounds);
 };

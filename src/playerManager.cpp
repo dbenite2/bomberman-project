@@ -22,8 +22,13 @@ void PlayerManager::HandleInput(const float& deltaTime) {
 		direction.x += 1;
 	}
 
-	m_player->Move(direction * deltaTime);
+	const sf::Vector2f newPosition = m_player->GetPosition() + direction * m_player->GetSpeed() * deltaTime;
 
+	const sf::FloatRect newBounds(newPosition, m_player->GetSize());
+	if (!isCollidingWithBombs(newPosition, newBounds)) {
+		m_player->Move(direction * deltaTime);
+	}
+	
 	// Place bombs
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 		PlaceBomb();
@@ -56,5 +61,14 @@ void PlayerManager::PlaceBomb() {
 	const sf::Vector2f direction = m_player->GetDirection();
 	sf::Vector2f positionOffset = position + direction * offsetDistance;
 	m_bombs.emplace_back(positionOffset, 3.0f, 100.0f, m_bombTexture);
+}
+
+bool PlayerManager::isCollidingWithBombs(const sf::Vector2f& newPosition, const sf::FloatRect& playerBounds) {
+	for (const auto& bomb: m_bombs) {
+		if(bomb.GetGlobalBounds().intersects(playerBounds)) {
+			return true;
+		}
+	}
+	return false;
 }
 

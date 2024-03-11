@@ -18,4 +18,5 @@ private:
 	std::unique_ptr<EnemyManager> m_enemyManager{nullptr};
 	std::unique_ptr<SceneManager> m_sceneManager{nullptr};
 	bool m_gameExit{ false };
+	void LoadTextures(const std::string& name, const std::string& route);
 };

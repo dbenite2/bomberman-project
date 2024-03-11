@@ -9,9 +9,12 @@ public:
 	void Render(sf::RenderWindow& renderWindow) const;
 	sf::Vector2f GetPosition() const;
 	sf::Vector2f GetDirection() const;
+	float GetSpeed() const;
+	sf::Vector2f GetSize() const;
 private:
 	sf::Sprite m_sprite;
 	sf::Texture m_texture;
-	float m_speed{30.f};
+	sf::Vector2f m_size{0.05f, 0.05f};
+	float m_speed{5.f};
 	sf::Vector2f m_lastDirection{0.f, 1.f};
 };

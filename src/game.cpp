@@ -1,16 +1,16 @@
 #include "game.h"
+#include <format>
 
 Game::Game() {
 	// Initialization of managers and game state
-	if(!m_assetManager.LoadTexture("player", "../assets/player/player.png")) {
-		throw std::runtime_error("Failed to load player texture");
-	}
-	if(!m_assetManager.LoadTexture("bomb", "../assets/player/bomb.png")) {
-		throw std::runtime_error("Failed to load bomb texture");
-	}
+	LoadTextures("player", "../assets/player/player.png");
+	LoadTextures("bomb", "../assets/player/bomb.png");
+	LoadTextures("solid", "../assets/maps/solid.png");
+	LoadTextures("destroyable", "../assets/maps/destroyable.png");
+	LoadTextures("base", "../assets/maps/base.png");
 	m_playerManager = std::make_unique<PlayerManager>(m_assetManager.GetTexture("player"), m_assetManager.GetTexture("bomb"));
 	m_enemyManager = std::make_unique<EnemyManager>();
-	m_sceneManager = std::make_unique<SceneManager>();
+	m_sceneManager = std::make_unique<SceneManager>(m_assetManager.GetTexture("destroyable"), m_assetManager.GetTexture("solid"), m_assetManager.GetTexture("base"));
 	m_gameExit = false;
 }
 
@@ -22,10 +22,17 @@ void Game::Update(const float& deltaTime) const {
 
 void Game::Render(sf::RenderWindow& renderWindow) const {
 	renderWindow.clear();
+	m_sceneManager->Render(renderWindow);
 	m_playerManager->Render(renderWindow);
 	renderWindow.display();
 }
 
 bool Game::ExitGame() const {
 	return m_gameExit;
+}
+
+void Game::LoadTextures(const std::string& name, const std::string& route) {
+	if(!m_assetManager.LoadTexture(name, route)) {
+		throw std::runtime_error("Failed to load" + name + "texture");
+	}
 }
