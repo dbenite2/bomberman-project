@@ -1,16 +1,15 @@
 #include "game.h"
-#include <format>
 
 Game::Game() {
 	// Initialization of managers and game state
-	LoadTextures("player", "../assets/player/player.png");
+	LoadTextures("player", "../assets/player/tile012.png");
 	LoadTextures("bomb", "../assets/player/bomb.png");
 	LoadTextures("solid", "../assets/maps/solid.png");
 	LoadTextures("destroyable", "../assets/maps/destroyable.png");
 	LoadTextures("base", "../assets/maps/base.png");
-	m_playerManager = std::make_unique<PlayerManager>(m_assetManager.GetTexture("player"), m_assetManager.GetTexture("bomb"));
-	m_enemyManager = std::make_unique<EnemyManager>();
 	m_sceneManager = std::make_unique<SceneManager>(m_assetManager.GetTexture("destroyable"), m_assetManager.GetTexture("solid"), m_assetManager.GetTexture("base"));
+	m_playerManager = std::make_unique<PlayerManager>(m_assetManager.GetTexture("player"), m_assetManager.GetTexture("bomb"), *m_sceneManager);
+	m_enemyManager = std::make_unique<EnemyManager>();
 	m_gameExit = false;
 }
 

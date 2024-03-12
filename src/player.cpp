@@ -3,8 +3,8 @@
 
 Player::Player(const sf::Texture& texture) {
 	m_sprite.setTexture(texture);
-	m_sprite.setScale(m_size);
-	m_sprite.setPosition(100.f, 100.f);
+	m_sprite.setScale(1.5f, 1.5f);
+	m_sprite.setPosition(70.f, 53.f);
 }
 
 
@@ -13,33 +13,7 @@ void Player::Update(const float& deltaTime) {
 }
 
 void Player::Move(sf::Vector2f direction) {
-	if(direction.x != 0.f || direction.y != 0.f) {
-		const float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-		direction /= length;
-		m_lastDirection = direction;
-	}
-
-	sf::Vector2f newPosition = m_sprite.getPosition() + direction * m_speed;
-
-	const float leftBoundary = 0.f;
-	const float rightBoundary = 800.f;
-	const float topBoundary = 0.f;
-	const float bottomBoundary = 600.f;
-
-	if (newPosition.x < leftBoundary) {
-		newPosition.x = leftBoundary;
-	} else if (newPosition.x + m_sprite.getGlobalBounds().width > rightBoundary) {
-		newPosition.x = rightBoundary - m_sprite.getGlobalBounds().width;
-	}
-
-	if (newPosition.y < topBoundary) {
-		newPosition.y = topBoundary;
-	} else if (newPosition.y + m_sprite.getGlobalBounds().height > bottomBoundary) {
-		newPosition.y = bottomBoundary - m_sprite.getGlobalBounds().height;
-	}
-	
-	// m_sprite.move(direction * m_speed);
-	m_sprite.setPosition(newPosition);
+	m_sprite.move(direction * m_speed);
 }
 
 
@@ -63,4 +37,11 @@ sf::Vector2f Player::GetSize() const {
 	return m_size;
 }
 
+sf::FloatRect Player::GetGlobalBounds() {
+	return m_sprite.getGlobalBounds();
+}
+
+void Player::SetPosition(const sf::Vector2f& position) {
+	m_sprite.setPosition(position);
+}
 

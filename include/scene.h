@@ -3,11 +3,13 @@
 
 class Scene {
 public:
-	Scene(sf::Texture& destroyableBlock, sf::Texture& nonDestroyableBlock, sf::Texture& walkableBlock);
-	// ~Scene();
+	Scene(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock, const sf::Texture& walkableBlock);
+	~Scene();
 	void Update(const float& deltaMS);
 	void Render(sf::RenderWindow& renderWindow);
-	void generateMatrix();
+	void GenerateMatrix() const;
+	void ChangeTileState(const int&x, const int& y, const int& newState) const;
+	bool IsCollision(const sf::FloatRect& bounds) const;
 private:
 	static size_t m_rows;
 	static size_t m_columns;
