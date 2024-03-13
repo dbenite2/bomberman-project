@@ -8,7 +8,8 @@ public:
     void Render(sf::RenderWindow& window) const;
     bool IsExploded() const;
     sf::FloatRect GetGlobalBounds() const;
-
+    sf::Vector2f GetBombPosition() const;
+    float GetExplosionRadius() const;
 private:
     sf::Sprite m_sprite;
     float m_countdown;

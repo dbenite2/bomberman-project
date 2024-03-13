@@ -10,6 +10,9 @@ Player::Player(const sf::Texture& texture) {
 
 void Player::Update(const float& deltaTime) {
 	// TODO: set player behaviour
+	if(m_died) {
+		m_sprite.rotate(90);
+	}
 }
 
 void Player::Move(sf::Vector2f direction) {
@@ -43,5 +46,9 @@ sf::FloatRect Player::GetGlobalBounds() {
 
 void Player::SetPosition(const sf::Vector2f& position) {
 	m_sprite.setPosition(position);
+}
+
+void Player::SetDiedState(bool state) {
+	m_died = state;
 }
 

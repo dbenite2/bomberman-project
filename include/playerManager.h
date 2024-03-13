@@ -20,4 +20,5 @@ private:
 
 	void PlaceBomb();
 	bool IsCollidingWithBombs(const sf::Vector2f& newPosition, const sf::FloatRect& playerBounds) const;
+	bool IsPlayerInExplosionArea(const std::vector<sf::Vector2i>& affectedTiles) const;
 };

@@ -34,4 +34,11 @@ void Bomb::explode() {
     m_exploded = true;
 }
 
+sf::Vector2f Bomb::GetBombPosition() const {
+    return m_sprite.getPosition();
+}
+
+float Bomb::GetExplosionRadius() const {
+    return m_explosionRadius;
+}
 

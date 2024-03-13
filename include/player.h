@@ -13,11 +13,13 @@ public:
 	sf::Vector2f GetSize() const;
 	sf::FloatRect GetGlobalBounds();
 	void SetPosition(const sf::Vector2f& position);
+	void SetDiedState(bool state);
 private:
 	sf::Sprite m_sprite;
 	sf::Texture m_texture;
 	// sf::Vector2f m_size{36.f, 50.f};
 	sf::Vector2f m_size{0.03f, 0.03f};
-	float m_speed{150.f};
+	float m_speed{100.f};
 	sf::Vector2f m_lastDirection{0.f, 1.f};
+	bool m_died{false};
 };

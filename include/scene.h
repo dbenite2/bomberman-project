@@ -8,7 +8,7 @@ public:
 	void Update(const float& deltaMS);
 	void Render(sf::RenderWindow& renderWindow);
 	void GenerateMatrix() const;
-	void ChangeTileState(const int&x, const int& y, const int& newState) const;
+	std::vector<sf::Vector2i> ChangeTileState(const sf::Vector2f bombPosition) const;
 	bool IsCollision(const sf::FloatRect& bounds) const;
 private:
 	static size_t m_rows;

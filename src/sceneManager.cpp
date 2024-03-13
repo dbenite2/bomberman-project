@@ -15,8 +15,8 @@ void SceneManager::Render(sf::RenderWindow& renderWindow){
 	m_scenes->Render(renderWindow);
 }
 
-void SceneManager::UpdateTileState(const int& x, const int& y, const int& newState) const {
-	m_scenes->ChangeTileState(x,y,newState);
+std::vector<sf::Vector2i> SceneManager::UpdateTileState(const sf::Vector2f bombPosition) const {
+	return m_scenes->ChangeTileState(bombPosition);
 }
 
 bool SceneManager::IsCollision(const sf::FloatRect& playerBounds) const {

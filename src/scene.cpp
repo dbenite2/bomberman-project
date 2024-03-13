@@ -3,8 +3,8 @@
 #include <iostream>
 #include <random>
 
-uint64_t Scene::m_rows{19};
-uint64_t Scene::m_columns{29};
+size_t Scene::m_rows{19};
+size_t Scene::m_columns{29};
 
 std::mt19937_64 mt(std::random_device{}());
 std::uniform_int_distribution<int>dist(2,3);
@@ -35,7 +35,7 @@ void Scene::GenerateMatrix() const {
 		m_gameMatrix[i] = new int[m_columns];
 	}
 	for (size_t i = 0; i< m_rows; i++) {
-		for(size_t j = 0; j<m_columns; j++) {
+		for(size_t j = 0; j < m_columns; j++) {
 			if (i == 0 || j == 0 || i == m_rows - 1 || j == m_columns - 1) {
 				m_gameMatrix[i][j] = 1; // map border
 				continue;
@@ -53,8 +53,31 @@ void Scene::GenerateMatrix() const {
 	}
 }
 
-void Scene::ChangeTileState(const int& x, const int& y, const int& newState) const {
-	m_gameMatrix[x][y] = newState;
+std::vector<sf::Vector2i> Scene::ChangeTileState(const sf::Vector2f bombPosition) const {
+	std::vector<sf::Vector2i> affectedTiles;
+	const int bombTileX = static_cast<int>(bombPosition.x / tile_width);
+	const int bombTileY = static_cast<int>(bombPosition.y / tile_height);
+
+	const std::vector<std::pair<int, int>> offsets = {
+		{1,0},
+		{0,1},
+		{-1,0},
+		{0,-1}
+	};
+	affectedTiles.emplace_back(bombTileX, bombTileY);
+	for (const auto& offset: offsets) {
+		const int targetX = bombTileX + offset.first;
+		const int targetY = bombTileY + offset.second;
+		affectedTiles.emplace_back(targetX, targetY);
+
+		// Ensure the target tile is within the bounds of the game matrix
+		if (targetX >= 0 && targetX < m_columns && targetY >= 0 && targetY < m_rows) {
+			if (m_gameMatrix[targetY][targetX] == 3) { // Assuming '2' represents a destroyable block
+				m_gameMatrix[targetY][targetX] = 2; // Change to walkable space, assuming '0' is walkable
+			}
+		}
+	}
+	return affectedTiles;
 }
 
 

@@ -7,10 +7,10 @@ PlayerManager::PlayerManager(const sf::Texture& playerTexture, const sf::Texture
 
 void PlayerManager::HandleInput(const float& deltaTime) {
 	sf::Vector2f direction;
-	sf::Vector2f currentPosition = m_player->GetPosition();
-	float speed = m_player->GetSpeed();
-	const float width = 17 * 1.5f;
-	const float height = 26 * 1.5f;
+	const sf::Vector2f currentPosition = m_player->GetPosition();
+	const float speed = m_player->GetSpeed();
+	constexpr float width = 17 * 1.5f; // sprite size * scale
+	constexpr float height = 26 * 1.5f;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 		direction.y -= 1;
 	}
@@ -46,7 +46,6 @@ void PlayerManager::HandleInput(const float& deltaTime) {
 		}
 	}
 
-	
 	// Place bombs
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 		PlaceBomb();
@@ -59,6 +58,13 @@ void PlayerManager::Update(const float& deltaTime) {
 
 	for (auto& bomb : m_bombs) {
 		bomb.Update(deltaTime);
+		if (bomb.IsExploded()) {
+			const sf::Vector2f bombPosition(bomb.GetBombPosition());
+			auto affectedTiles = m_sceneManager.UpdateTileState(bombPosition);
+			if (IsPlayerInExplosionArea(affectedTiles)) {
+				m_player->SetDiedState(true);
+			}
+		}
 	}
 
 	m_bombs.erase(std::remove_if(m_bombs.begin(), m_bombs.end(), [](const Bomb& b){return b.IsExploded(); }), m_bombs.end());
@@ -74,11 +80,8 @@ void PlayerManager::Render(sf::RenderWindow& renderWindow) const {
 
 void PlayerManager::PlaceBomb() {
 	// get position of player and spawn bomb
-	const float offsetDistance = 0.5;
 	const sf::Vector2f position = m_player->GetPosition();
-	const sf::Vector2f direction = m_player->GetDirection();
-	sf::Vector2f positionOffset = position + direction * offsetDistance;
-	m_bombs.emplace_back(positionOffset, 3.0f, 100.0f, m_bombTexture);
+	m_bombs.emplace_back(position, 3.0f, 2.f, m_bombTexture);
 }
 
 bool PlayerManager::IsCollidingWithBombs(const sf::Vector2f& newPosition, const sf::FloatRect& playerBounds) const {
@@ -88,5 +91,19 @@ bool PlayerManager::IsCollidingWithBombs(const sf::Vector2f& newPosition, const 
 		}
 	}
 	return false;
+}
+
+bool PlayerManager::IsPlayerInExplosionArea(const std::vector<sf::Vector2i>& affectedTiles) const {
+	sf::Vector2f playerPosition = m_player->GetPosition();
+	int playerTileX = static_cast<int>(playerPosition.x / 63);
+	int playerTileY = static_cast<int>(playerPosition.y / 53);
+
+	for (const auto& tile : affectedTiles) {
+		if (tile.x == playerTileX && tile.y == playerTileY) {
+			return true; // Player is in the explosion area
+		}
+	}
+
+	return false; // Player is safe
 }
 
