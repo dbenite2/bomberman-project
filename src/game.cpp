@@ -2,7 +2,7 @@
 
 Game::Game() {
 	// Initialization of managers and game state
-	LoadTextures("player", "../assets/player/tile012.png");
+	LoadTextures("player", "../assets/player/player_sprite.png");
 	LoadTextures("bomb", "../assets/player/bomb.png");
 	LoadTextures("solid", "../assets/maps/solid.png");
 	LoadTextures("destroyable", "../assets/maps/destroyable.png");

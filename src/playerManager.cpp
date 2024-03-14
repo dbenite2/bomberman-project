@@ -7,6 +7,7 @@ PlayerManager::PlayerManager(const sf::Texture& playerTexture, const sf::Texture
 
 void PlayerManager::HandleInput(const float& deltaTime) {
 	sf::Vector2f direction;
+	m_player->SetDirection(direction);
 	const sf::Vector2f currentPosition = m_player->GetPosition();
 	const float speed = m_player->GetSpeed();
 	constexpr float width = 17 * 1.5f; // sprite size * scale
@@ -39,10 +40,10 @@ void PlayerManager::HandleInput(const float& deltaTime) {
 				m_player->SetPosition(adjustedPosition);
 			}
 		} else {
-			m_player->Move(direction * deltaTime);
+			m_player->SetDirection(direction);
 		}
 		if (!IsCollidingWithBombs(newPosition, proposedBounds)) {
-			m_player->Move(direction * deltaTime);
+			m_player->SetDirection(direction);
 		}
 	}
 
