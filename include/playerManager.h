@@ -7,7 +7,7 @@
 
 class PlayerManager {
 public:
-	PlayerManager(const sf::Texture& playerTexture, const sf::Texture& bombTexture, SceneManager& sceneManager);
+	PlayerManager(const sf::Texture& playerTexture, const sf::Texture& bombTexture, const sf::Texture& explosionTexture ,SceneManager& sceneManager);
 	~PlayerManager() = default;
 	void Update(const float& deltaTime);
 	void Render(sf::RenderWindow& renderWindow) const;
@@ -15,8 +15,10 @@ public:
 private:
 	std::unique_ptr<Player>m_player;
 	sf::Texture m_bombTexture;
+	sf::Texture m_bombExplosionTexture;
 	std::vector<Bomb> m_bombs;
 	SceneManager& m_sceneManager;
+	bool m_canPlaceBombs{true};
 
 	void PlaceBomb();
 	bool IsCollidingWithBombs(const sf::Vector2f& newPosition, const sf::FloatRect& playerBounds) const;

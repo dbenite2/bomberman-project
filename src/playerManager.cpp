@@ -1,7 +1,8 @@
 #include "playerManager.h"
  
-PlayerManager::PlayerManager(const sf::Texture& playerTexture, const sf::Texture& bombTexture, SceneManager& sceneManager)
-	: m_bombTexture(bombTexture), m_sceneManager(sceneManager) {
+PlayerManager::PlayerManager(const sf::Texture& playerTexture, const sf::Texture& bombTexture, const sf::Texture& explosionTexture,
+	SceneManager& sceneManager)
+	: m_bombTexture(bombTexture), m_bombExplosionTexture(explosionTexture) ,m_sceneManager(sceneManager) {
 	m_player = std::make_unique<Player>(playerTexture);
 }
 
@@ -48,7 +49,7 @@ void PlayerManager::HandleInput(const float& deltaTime) {
 	}
 
 	// Place bombs
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && m_canPlaceBombs) {
 		PlaceBomb();
 	}
 }
@@ -59,7 +60,8 @@ void PlayerManager::Update(const float& deltaTime) {
 
 	for (auto& bomb : m_bombs) {
 		bomb.Update(deltaTime);
-		if (bomb.IsExploded()) {
+		if (bomb.ShouldRemoveBomb()) {
+			m_canPlaceBombs = true;
 			const sf::Vector2f bombPosition(bomb.GetBombPosition());
 			auto affectedTiles = m_sceneManager.UpdateTileState(bombPosition);
 			if (IsPlayerInExplosionArea(affectedTiles)) {
@@ -68,7 +70,7 @@ void PlayerManager::Update(const float& deltaTime) {
 		}
 	}
 
-	m_bombs.erase(std::remove_if(m_bombs.begin(), m_bombs.end(), [](const Bomb& b){return b.IsExploded(); }), m_bombs.end());
+	m_bombs.erase(std::remove_if(m_bombs.begin(), m_bombs.end(), [](const Bomb& b){return b.ShouldRemoveBomb(); }), m_bombs.end());
 }
 
 void PlayerManager::Render(sf::RenderWindow& renderWindow) const {
@@ -82,7 +84,8 @@ void PlayerManager::Render(sf::RenderWindow& renderWindow) const {
 void PlayerManager::PlaceBomb() {
 	// get position of player and spawn bomb
 	const sf::Vector2f position = m_player->GetPosition();
-	m_bombs.emplace_back(position, 3.0f, 2.f, m_bombTexture);
+	m_bombs.emplace_back(position, 3.0f, 2.f, m_bombTexture, m_bombExplosionTexture);
+	m_canPlaceBombs = false;
 }
 
 bool PlayerManager::IsCollidingWithBombs(const sf::Vector2f& newPosition, const sf::FloatRect& playerBounds) const {

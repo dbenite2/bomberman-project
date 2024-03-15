@@ -7,8 +7,9 @@ Game::Game() {
 	LoadTextures("solid", "../assets/maps/solid.png");
 	LoadTextures("destroyable", "../assets/maps/destroyable.png");
 	LoadTextures("base", "../assets/maps/base.png");
+	LoadTextures("explosion", "../assets/player/explosion.png");
 	m_sceneManager = std::make_unique<SceneManager>(m_assetManager.GetTexture("destroyable"), m_assetManager.GetTexture("solid"), m_assetManager.GetTexture("base"));
-	m_playerManager = std::make_unique<PlayerManager>(m_assetManager.GetTexture("player"), m_assetManager.GetTexture("bomb"), *m_sceneManager);
+	m_playerManager = std::make_unique<PlayerManager>(m_assetManager.GetTexture("player"), m_assetManager.GetTexture("bomb"),m_assetManager.GetTexture("explosion"), *m_sceneManager);
 	m_enemyManager = std::make_unique<EnemyManager>();
 	m_gameExit = false;
 }

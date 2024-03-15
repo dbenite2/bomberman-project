@@ -1,48 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <memory>
+#include <vector>
+#include "animation.h"
 
-class Animation {
-public:
-	Animation() = default;
-	Animation(int x, int y, int width, int height, bool row, bool animated) : animate(animated) {
-		if (animate) {
-			if (row) {
-				for (int i = 0; i< nFrames; i++ ) {
-					frames[i] = {x + i * width, y,  width, height};
-				}
-			} else {
-				for (int i = 0; i< nFrames; i++ ) {
-					frames[i] = {x, y + i * height,  width, height};
-				}
-			}
-		} else {
-			frames[0] = {x, y, width, height};
-		}
-	}
-	void ApplyToSprite(sf::Sprite& s) const {
-		s.setTextureRect(frames[iFrame]);
-	}
-	void Update(float dt) {
-		time += dt;
-		while (time >= holdTime) {
-			time -= holdTime;
-			if (animate) Advance();
-		}
-	}
-private:
-	void Advance() {
-		if (++iFrame  >= nFrames) {
-			iFrame = 0;
-		}
-	}
-	inline static constexpr int nFrames = 3;
-	float holdTime = 0.08f;
-	sf::Texture texture;
-	sf::IntRect frames[nFrames];
-	int iFrame = 0;
-	float time = 0.0f;
-	bool animate{false};
-};
 
 class Player {
 public:
@@ -67,7 +28,7 @@ private:
 		IdleUp,
 		IdleDown,
 		IdleLeft,
-		IdleRigth,
+		IdleRight,
 		IdleDead,
 		Dead,
 		Count
@@ -80,6 +41,9 @@ private:
 	sf::Vector2f m_direction{0.f, 0.f};
 	sf::Vector2f m_lastDirection{0.f, 0.f};
 	bool m_died{false};
-	Animation animations[int(AnimationIndex::Count)];
+	std::vector<std::unique_ptr<Animation>> m_animations;
 	AnimationIndex currentAnimation = AnimationIndex::IdleDown;
+
+	void AddAnimation(AnimationIndex index, int x, int y, int width, int height, int nFrames, bool row = true);
+
 };

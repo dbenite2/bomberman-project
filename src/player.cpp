@@ -1,37 +1,45 @@
 #include "player.h"
 
-#include <stdbool.h>
+constexpr float holdTime = 0.08f;
 
 Player::Player(const sf::Texture& texture) {
 	m_sprite.setTexture(texture);
 	m_sprite.setScale(1.8f, 1.8f);
 	m_sprite.setPosition(70.f, 53.f);
-	animations[static_cast<int>(AnimationIndex::WalkingUp)] = Animation(16, 0, 18,26, true, true);
-	animations[static_cast<int>(AnimationIndex::WalkingDown)] = Animation(0, 26, 18,26, false, true);
-	animations[static_cast<int>(AnimationIndex::WalkingLeft)] = Animation(18, 78, 18,26, true, true);
-	animations[static_cast<int>(AnimationIndex::WalkingRight)] = Animation(18, 26, 18,26, true, true);
-	animations[static_cast<int>(AnimationIndex::IdleDown)] = Animation(0, 52, 18, 26, true, false);
-	animations[static_cast<int>(AnimationIndex::IdleUp)] = Animation(0, 0, 18, 26, true, false);
-	animations[static_cast<int>(AnimationIndex::IdleLeft)] = Animation(18, 78, 18, 26, true, false);
-	animations[static_cast<int>(AnimationIndex::IdleRigth)] = Animation(18, 26, 18, 26, true, false);
-	animations[static_cast<int>(AnimationIndex::Dead)] = Animation(49, 104, 18, 26, true, true);
-	animations[static_cast<int>(AnimationIndex::IdleDead)] = Animation(49, 104, 18, 26, true, false);
+	AddAnimation(AnimationIndex::WalkingUp, 16, 0, 18,26, 3);
+	AddAnimation(AnimationIndex::WalkingDown, 0, 26, 18,26, 3, false);
+	AddAnimation(AnimationIndex::WalkingLeft, 18, 78, 18, 26, 3);
+	AddAnimation(AnimationIndex::WalkingRight, 18, 26, 18, 26, 3);
+	AddAnimation(AnimationIndex::IdleUp, 0, 0, 18, 26, 1, false);
+	AddAnimation(AnimationIndex::IdleDown, 0, 52, 18, 26, 1, false);
+	AddAnimation(AnimationIndex::IdleLeft, 18, 78, 18, 26, 1, false);
+	AddAnimation(AnimationIndex::IdleRight, 18, 26, 18, 26, 1, false); // Note the change from IdleRigth to IdleRight for consistency
+	AddAnimation(AnimationIndex::IdleDead, 49, 104, 18, 26, 1, false);
+	AddAnimation(AnimationIndex::Dead, 49, 104, 18, 26, 3);
+	// animations[static_cast<int>(AnimationIndex::WalkingUp)] = Animation(16, 0, 18,26, 3, holdTime);
+	// animations[static_cast<int>(AnimationIndex::WalkingDown)] = Animation(0, 26, 18,26, 3, holdTime, false);
+	// animations[static_cast<int>(AnimationIndex::WalkingLeft)] = Animation(18, 78, 18,26, 3, holdTime);
+	// animations[static_cast<int>(AnimationIndex::WalkingRight)] = Animation(18, 26, 18,26, 3, holdTime);
+	// animations[static_cast<int>(AnimationIndex::IdleDown)] = Animation(0, 52, 18, 26, 1, holdTime, false);
+	// animations[static_cast<int>(AnimationIndex::IdleUp)] = Animation(0, 0, 18, 26, 1, holdTime, false);
+	// animations[static_cast<int>(AnimationIndex::IdleLeft)] = Animation(18, 78, 18, 26, 1, holdTime, false);
+	// animations[static_cast<int>(AnimationIndex::IdleRigth)] = Animation(18, 26, 18, 26, 1, holdTime, false);
+	// animations[static_cast<int>(AnimationIndex::Dead)] = Animation(49, 104, 18, 26, 3, holdTime);
+	// animations[static_cast<int>(AnimationIndex::IdleDead)] = Animation(49, 104, 18, 26, 1, holdTime, false);
 	
 }
 
-
 void Player::Update(const float& deltaTime) {
 	// TODO: set player behaviour
-	if(m_died && m_speed != 0.f) {
-		currentAnimation = AnimationIndex::Dead;
-		m_direction = {0,0};
+
+	if (m_died) {
+		currentAnimation = m_speed != 0.f ? AnimationIndex::Dead : AnimationIndex::IdleDead;
+		m_direction = sf::Vector2f(0.f, 0.f);
 		m_speed = 0.f;
 	}
-	animations[int(currentAnimation)].Update(deltaTime);
-	animations[int(currentAnimation)].ApplyToSprite(m_sprite);
-	if (m_speed == 0.f) {
-		currentAnimation = AnimationIndex::IdleDead;
-	}
+	const auto& currentAnim = m_animations[static_cast<int>(currentAnimation)];
+	currentAnim->Update(deltaTime);
+	currentAnim->ApplyToSprite(m_sprite);
 	Move(m_direction * m_speed * deltaTime);
 }
 
@@ -58,7 +66,7 @@ void Player::SetDirection(const sf::Vector2f& direction) {
 			if (m_lastDirection.x < 0.f) {
 				currentAnimation = AnimationIndex::IdleLeft;
 			} else if (m_lastDirection.x > 0.f) {
-				currentAnimation = AnimationIndex::IdleRigth;
+				currentAnimation = AnimationIndex::IdleRight;
 			} else if (m_lastDirection.y < 0.f) {
 				currentAnimation = AnimationIndex::IdleUp;
 			} else if (m_lastDirection.y > 0.f) {
@@ -102,5 +110,10 @@ void Player::SetPosition(const sf::Vector2f& position) {
 
 void Player::SetDiedState(bool state) {
 	m_died = state;
+}
+
+void Player::AddAnimation(AnimationIndex index, int x, int y, int width, int height, int nFrames,
+	bool row) {
+	m_animations.emplace_back(std::make_unique<Animation>(x, y, width, height, nFrames, holdTime, row));
 }
 
