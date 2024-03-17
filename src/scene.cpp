@@ -6,7 +6,11 @@
 std::mt19937_64 mt(std::random_device{}());
 std::uniform_int_distribution<int>dist(2,3);
 
-Scene::Scene(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock, const sf::Texture& walkableBlock, const size_t& rows, const size_t& columns, const int& tileWidth, const int& tileHeight) : m_rows(rows), m_columns(columns), m_tileWidth(tileWidth), m_tileHeight(tileHeight) {
+Scene::Scene(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock,
+			const sf::Texture& walkableBlock, const size_t& rows, const size_t& columns,
+			const int& tileWidth, const int& tileHeight)
+			: m_rows(rows), m_columns(columns), m_tileWidth(tileWidth), m_tileHeight(tileHeight) {
+	
 	m_destroyableBlock.setTexture(destroyableBlock);
 	m_nonDestroyableBlock.setTexture(nonDestroyableBlock);
 	m_walkableBlock.setTexture(walkableBlock);
@@ -84,11 +88,6 @@ std::vector<sf::Vector2f> Scene::GetValidTiles() const {
  		}
 	}
 	return validTiles;
-}
-
-
-void Scene::Update(const float& deltaTime) {
-	//TODO: Update scene behaviour
 }
 
 void Scene::Render(sf::RenderWindow& renderWindow) {

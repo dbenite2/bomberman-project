@@ -4,7 +4,6 @@ bool AssetManager::LoadTexture(const std::string& name, const std::string& filen
     
     sf::Texture texture;
     if (!texture.loadFromFile(filename)) {
-        // If loading failed, return false
         return false;
     }
 

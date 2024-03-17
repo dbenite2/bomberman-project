@@ -2,11 +2,9 @@
 
 constexpr float holdTime = 0.2f;
 
-// explosion sprite width 20px height 20px
-
-Bomb::Bomb(const sf::Vector2f position, float countdown, float explosionRadius,
-    sf::Texture& bombTexture, sf::Texture& explosionTexture)
-    : m_countdown(countdown), m_explosionRadius(explosionRadius), m_exploded(false), m_removalDelay(0.5f) {
+Bomb::Bomb(const sf::Vector2f& position, const float& countdown,const float& explosionRadius,
+    const sf::Texture& bombTexture,const sf::Texture& explosionTexture)
+    : m_countdown(countdown), m_explosionRadius(explosionRadius) {
     m_bombSprite.setTexture(bombTexture);
     m_bombSprite.setPosition(position);
     m_bombSprite.setScale(sf::Vector2f(1.5f, 1.5f));
@@ -45,7 +43,7 @@ void Bomb::Update(float deltaTime) {
         currentAnim->ApplyToSprite(m_bombSprite);
         m_countdown -= deltaTime;
         if(m_countdown <= 0) {
-            explode(*currentAnim);
+            Explode(*currentAnim);
         }
     } else {
         currentAnim->ApplyToSprite(m_explosionSprite);
@@ -81,7 +79,7 @@ void Bomb::AddAnimation(animation_index index, int x, int y, int width, int heig
     m_animations.emplace_back(std::make_unique<Animation>(x, y, width, height, nFrames, holdTime, row));
 }
 
-void Bomb::explode(const Animation& currentAnimation) {
+void Bomb::Explode(const Animation& currentAnimation) {
     m_currentAnimation = animation_index::bomb_explosion;
     currentAnimation.ApplyToSprite(m_explosionSprite);
     m_exploded = true;

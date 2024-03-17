@@ -4,7 +4,9 @@
 #include <vector>
 #include "animation.h"
 
-
+/**
+ * Class that represents the player in the game
+ */
 class Player {
 public:
 	Player(const sf::Texture& texture, const float& spriteScale, const sf::Vector2f& position, const float& speed);
@@ -14,8 +16,6 @@ public:
 	sf::Vector2f GetPosition() const;
 	sf::Vector2f GetDirection() const;
 	float GetSpeed() const;
-	sf::Vector2f GetSize() const;
-	sf::FloatRect GetGlobalBounds();
 	void SetPosition(const sf::Vector2f& position);
 	void SetDirection(const sf::Vector2f& direction);
 	void SetDiedState(bool state);
@@ -36,8 +36,6 @@ private:
 	};
 	sf::Sprite m_sprite;
 	sf::Texture m_texture;
-	// sf::Vector2f m_size{36.f, 50.f};
-	sf::Vector2f m_size{0.03f, 0.03f};
 	float m_speed{0.f};
 	sf::Vector2f m_direction{0.f, 0.f};
 	sf::Vector2f m_lastDirection{0.f, 0.f};

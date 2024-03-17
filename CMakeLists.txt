@@ -3,7 +3,6 @@ project(BombermanProject VERSION 0.0.1 LANGUAGES CXX)
 
 set(PROJECT_HEADERS
     include/assetManager.h
-    include/IBasicOperations.h
     include/enemy.h
     include/enemyManager.h
     include/game.h
@@ -11,8 +10,8 @@ set(PROJECT_HEADERS
     include/playerManager.h
     include/scene.h
     include/sceneManager.h
-    include/world.h
-    include/bomb
+    include/bomb.h
+    include/animation.h
 )
 
 set(PROJECT_SOURCES
@@ -23,9 +22,9 @@ set(PROJECT_SOURCES
     src/playerManager.cpp
     src/scene.cpp
     src/sceneManager.cpp
-    src/world.cpp
     src/main.cpp
     src/assetManager.cpp
+    src/bomb.cpp
 )
 
 set(PROJECT_FILES 

@@ -2,7 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-
+/**
+ * Class to handle the sprites animation
+ */
 class Animation {
 public:
     Animation() = default;

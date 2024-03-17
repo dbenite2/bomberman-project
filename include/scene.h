@@ -1,11 +1,16 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+/**
+ * Class that draws and keeps the current world state
+ */
+
 class Scene {
 public:
-	Scene(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock, const sf::Texture& walkableBlock, const size_t& rows, const size_t& columns, const int& tileWidth, const int& tileHeight);
+	Scene(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock,
+		const sf::Texture& walkableBlock, const size_t& rows, const size_t& columns,
+		const int& tileWidth, const int& tileHeight);
 	~Scene();
-	void Update(const float& deltaMS);
 	void Render(sf::RenderWindow& renderWindow);
 	void GenerateMatrix() const;
 	std::vector<sf::Vector2i> ChangeTileState(const sf::Vector2f bombPosition) const;

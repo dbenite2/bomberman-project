@@ -12,7 +12,6 @@ Game::Game(std::map<std::string, std::string>& config) {
 void Game::Update(const float& deltaTime) const {
 	m_enemyManager->Update(deltaTime);
 	m_playerManager->Update(deltaTime);
-	// m_sceneManager->Update(deltaTime);
 }
 
 void Game::Render(sf::RenderWindow& renderWindow) const {
@@ -60,7 +59,7 @@ void Game::InitPlayerManager(std::map<std::string, std::string>& config) {
 			m_assetManager.GetTexture(config["bomb_texture_name"]),
 			m_assetManager.GetTexture(config["bomb_explosion_texture_name"]),
 			m_sceneManager.get(), playerSpeed, playerPosition, playerSpriteDimensions,
-			playerSpriteScale, bombSpriteDimensions, bombSpriteScale, playerAdjustment,
+			playerSpriteScale, bombSpriteDimensions, playerAdjustment,
 			bombCountdown, tileWidth, tileHeight);
 }
 

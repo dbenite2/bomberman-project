@@ -3,6 +3,9 @@
 
 #include "animation.h"
 
+/**
+ * Class that represents an enemy in the game, it moves in random directions when it collides with a wall.
+ */
 class Enemy {
 public:
 	Enemy(const sf::Texture& texture, const sf::Vector2f& position, const sf::Vector2f& initialDirection, const float& speed, const float& spriteScale);

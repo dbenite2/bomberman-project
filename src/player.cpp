@@ -36,39 +36,43 @@ void Player::Move(sf::Vector2f direction) {
 
 void Player::SetDirection(const sf::Vector2f& direction) {
 	m_direction = direction;
-	if (!m_died) {
-		if (m_direction.x < 0.f) {
-			currentAnimation = AnimationIndex::WalkingLeft;
-			m_lastDirection = direction;
-		} else if (m_direction.x > 0.f) {
-			currentAnimation = AnimationIndex::WalkingRight;
-			m_lastDirection = direction;
-		} else if (m_direction.y < 0.f) {
-			currentAnimation = AnimationIndex::WalkingUp;
-			m_lastDirection = direction;
-		} else if (m_direction.y > 0.f) {
-			currentAnimation = AnimationIndex::WalkingDown;
-			m_lastDirection = direction;
-		} else if (m_direction.x == 0.f && m_direction.y == 0.f) {
-			if (m_lastDirection.x < 0.f) {
-				currentAnimation = AnimationIndex::IdleLeft;
-			} else if (m_lastDirection.x > 0.f) {
-				currentAnimation = AnimationIndex::IdleRight;
-			} else if (m_lastDirection.y < 0.f) {
-				currentAnimation = AnimationIndex::IdleUp;
-			} else if (m_lastDirection.y > 0.f) {
-				currentAnimation = AnimationIndex::IdleDown;
+
+	if (m_died) {
+		return;
+	}
+	
+	auto setAnimationBasedOnDirection = [this]() {
+		if (m_direction == sf::Vector2f{0.f, 0.f}) {
+			switch (currentAnimation) {
+			case AnimationIndex::WalkingLeft:  currentAnimation = AnimationIndex::IdleLeft; break;
+			case AnimationIndex::WalkingRight: currentAnimation = AnimationIndex::IdleRight; break;
+			case AnimationIndex::WalkingUp:    currentAnimation = AnimationIndex::IdleUp; break;
+			case AnimationIndex::WalkingDown:  currentAnimation = AnimationIndex::IdleDown; break;
+			default: break;
+			}
+		} else {
+			if (m_direction.x < 0.f) {
+				currentAnimation = AnimationIndex::WalkingLeft;
+			} else if (m_direction.x > 0.f) {
+				currentAnimation = AnimationIndex::WalkingRight;
+			} else if (m_direction.y < 0.f) {
+				currentAnimation = AnimationIndex::WalkingUp;
+			} else if (m_direction.y > 0.f) {
+				currentAnimation = AnimationIndex::WalkingDown;
 			}
 		}
-	}
+		m_lastDirection = m_direction;
+	};
+	setAnimationBasedOnDirection();
 }
+
 
 
 
 void Player::Render(sf::RenderWindow& renderWindow) const {
 	if (!m_died) {
+		renderWindow.draw(m_sprite);
 	}
-	renderWindow.draw(m_sprite);
 }
 
 sf::Vector2f Player::GetPosition() const {
@@ -81,14 +85,6 @@ sf::Vector2f Player::GetDirection() const {
 
 float Player::GetSpeed() const {
 	return m_speed;
-}
-
-sf::Vector2f Player::GetSize() const {
-	return m_size;
-}
-
-sf::FloatRect Player::GetGlobalBounds() {
-	return m_sprite.getGlobalBounds();
 }
 
 void Player::SetPosition(const sf::Vector2f& position) {

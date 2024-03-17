@@ -3,7 +3,9 @@
 #include <unordered_map>
 #include <string>
 
-// class to handle resources in the game
+/**
+ * class to handle resources in the game
+ */
 class AssetManager {
 public:
     // Loads a texture and stores it with the specified name

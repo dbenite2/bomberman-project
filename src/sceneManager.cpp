@@ -1,13 +1,13 @@
 #include "sceneManager.h"
 
-SceneManager::SceneManager(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock, const sf::Texture& walkableBlock, const size_t& rows, const size_t& columns, const int& tileWidth, const int& tileHeight) {
-	m_scenes = std::make_unique<Scene>(destroyableBlock, nonDestroyableBlock, walkableBlock, rows, columns, tileWidth, tileHeight);
+SceneManager::SceneManager(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock,
+							const sf::Texture& walkableBlock, const size_t& rows, const size_t& columns,
+							const int& tileWidth, const int& tileHeight) {
+	m_scenes = std::make_unique<Scene>(destroyableBlock, nonDestroyableBlock, walkableBlock, rows,
+										columns, tileWidth, tileHeight);
 }
 
 void SceneManager::Update(const float& deltaMS) {
-	// for (Scene* scenes : m_scenes) {
-	// 	scenes->Update(deltaMS);
-	// }
 }
 
 void SceneManager::Render(sf::RenderWindow& renderWindow){
