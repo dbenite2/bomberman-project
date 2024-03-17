@@ -80,6 +80,18 @@ std::vector<sf::Vector2i> Scene::ChangeTileState(const sf::Vector2f bombPosition
 	return affectedTiles;
 }
 
+std::vector<sf::Vector2f> Scene::GetValidTiles() const {
+	std::vector<sf::Vector2f> validTiles;
+	for(size_t i = 0; i < m_rows; i++) {
+		for(size_t j = 0; j < m_columns; j++) {
+			if (m_gameMatrix[i][j] == 2) {
+				validTiles.emplace_back(j * tile_width, i * tile_height);
+			}
+ 		}
+	}
+	return validTiles;
+}
+
 
 void Scene::Update(const float& deltaTime) {
 	//TODO: Update scene behaviour
@@ -115,7 +127,7 @@ bool Scene::IsCollision(const sf::FloatRect& bounds) const {
 	for(size_t y = topTile; y <= bottomTile; y++) {
 		for(size_t x = leftTile; x <= rightTile; x++) {
 			if (x < m_columns && y < m_rows) {
-				if (m_gameMatrix[y][x] == 1 || m_gameMatrix[y][x] == 3) { // Assuming '1' represents a non-walkable tile
+				if (m_gameMatrix[y][x] == 1 || m_gameMatrix[y][x] == 3) {
 					return true; // Collision detected
 				}
 			}

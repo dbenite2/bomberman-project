@@ -2,10 +2,10 @@
 
 constexpr float holdTime = 0.08f;
 
-Player::Player(const sf::Texture& texture) {
+Player::Player(const sf::Texture& texture, const float& spriteScale, const sf::Vector2f& position, const float& speed) : m_speed(speed) {
 	m_sprite.setTexture(texture);
-	m_sprite.setScale(1.8f, 1.8f);
-	m_sprite.setPosition(70.f, 53.f);
+	m_sprite.setScale(spriteScale, spriteScale);
+	m_sprite.setPosition(position);
 	AddAnimation(AnimationIndex::WalkingUp, 16, 0, 18,26, 3);
 	AddAnimation(AnimationIndex::WalkingDown, 0, 26, 18,26, 3, false);
 	AddAnimation(AnimationIndex::WalkingLeft, 18, 78, 18, 26, 3);
@@ -13,20 +13,9 @@ Player::Player(const sf::Texture& texture) {
 	AddAnimation(AnimationIndex::IdleUp, 0, 0, 18, 26, 1, false);
 	AddAnimation(AnimationIndex::IdleDown, 0, 52, 18, 26, 1, false);
 	AddAnimation(AnimationIndex::IdleLeft, 18, 78, 18, 26, 1, false);
-	AddAnimation(AnimationIndex::IdleRight, 18, 26, 18, 26, 1, false); // Note the change from IdleRigth to IdleRight for consistency
+	AddAnimation(AnimationIndex::IdleRight, 18, 26, 18, 26, 1, false);
 	AddAnimation(AnimationIndex::IdleDead, 49, 104, 18, 26, 1, false);
 	AddAnimation(AnimationIndex::Dead, 49, 104, 18, 26, 3);
-	// animations[static_cast<int>(AnimationIndex::WalkingUp)] = Animation(16, 0, 18,26, 3, holdTime);
-	// animations[static_cast<int>(AnimationIndex::WalkingDown)] = Animation(0, 26, 18,26, 3, holdTime, false);
-	// animations[static_cast<int>(AnimationIndex::WalkingLeft)] = Animation(18, 78, 18,26, 3, holdTime);
-	// animations[static_cast<int>(AnimationIndex::WalkingRight)] = Animation(18, 26, 18,26, 3, holdTime);
-	// animations[static_cast<int>(AnimationIndex::IdleDown)] = Animation(0, 52, 18, 26, 1, holdTime, false);
-	// animations[static_cast<int>(AnimationIndex::IdleUp)] = Animation(0, 0, 18, 26, 1, holdTime, false);
-	// animations[static_cast<int>(AnimationIndex::IdleLeft)] = Animation(18, 78, 18, 26, 1, holdTime, false);
-	// animations[static_cast<int>(AnimationIndex::IdleRigth)] = Animation(18, 26, 18, 26, 1, holdTime, false);
-	// animations[static_cast<int>(AnimationIndex::Dead)] = Animation(49, 104, 18, 26, 3, holdTime);
-	// animations[static_cast<int>(AnimationIndex::IdleDead)] = Animation(49, 104, 18, 26, 1, holdTime, false);
-	
 }
 
 void Player::Update(const float& deltaTime) {
@@ -112,8 +101,12 @@ void Player::SetDiedState(bool state) {
 	m_died = state;
 }
 
+bool Player::GetDiedState() const {
+	return m_died;
+}
+
 void Player::AddAnimation(AnimationIndex index, int x, int y, int width, int height, int nFrames,
-	bool row) {
+                          bool row) {
 	m_animations.emplace_back(std::make_unique<Animation>(x, y, width, height, nFrames, holdTime, row));
 }
 

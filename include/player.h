@@ -7,7 +7,7 @@
 
 class Player {
 public:
-	Player(const sf::Texture& texture);
+	Player(const sf::Texture& texture, const float& spriteScale, const sf::Vector2f& position, const float& speed);
 	void Update(const float& deltaTime);
 	void Move(sf::Vector2f direction);
 	void Render(sf::RenderWindow& renderWindow) const;
@@ -19,6 +19,7 @@ public:
 	void SetPosition(const sf::Vector2f& position);
 	void SetDirection(const sf::Vector2f& direction);
 	void SetDiedState(bool state);
+	bool GetDiedState() const;
 private:
 	enum class AnimationIndex {
 		WalkingUp,
@@ -37,7 +38,7 @@ private:
 	sf::Texture m_texture;
 	// sf::Vector2f m_size{36.f, 50.f};
 	sf::Vector2f m_size{0.03f, 0.03f};
-	float m_speed{80.f};
+	float m_speed{0.f};
 	sf::Vector2f m_direction{0.f, 0.f};
 	sf::Vector2f m_lastDirection{0.f, 0.f};
 	bool m_died{false};

@@ -9,6 +9,7 @@ public:
 	void Render(sf::RenderWindow& renderWindow);
 	void GenerateMatrix() const;
 	std::vector<sf::Vector2i> ChangeTileState(const sf::Vector2f bombPosition) const;
+	std::vector<sf::Vector2f> GetValidTiles() const;
 	bool IsCollision(const sf::FloatRect& bounds) const;
 private:
 	static size_t m_rows;

@@ -23,3 +23,7 @@ bool SceneManager::IsCollision(const sf::FloatRect& playerBounds) const {
 	return m_scenes->IsCollision(playerBounds);
 }
 
+std::vector<sf::Vector2f> SceneManager::GetValidTiles() const {
+	return m_scenes->GetValidTiles();
+}
+

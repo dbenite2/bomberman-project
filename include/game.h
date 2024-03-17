@@ -7,7 +7,7 @@
 
 class Game {
 public:
-	Game();
+	Game(std::map<std::string, std::string>& config);
 	~Game();
 	void Update(const float& deltaTime) const;
 	void Render(sf::RenderWindow& renderWindow) const;
@@ -18,5 +18,9 @@ private:
 	std::unique_ptr<EnemyManager> m_enemyManager{nullptr};
 	std::unique_ptr<SceneManager> m_sceneManager{nullptr};
 	bool m_gameExit{ false };
-	void LoadTextures(const std::string& name, const std::string& route);
+	void LoadTexture(const std::string& name, const std::string& route);
+	void LoadGameTextures(std::map<std::string, std::string>& config);
+	void InitPlayerManager(std::map<std::string, std::string>& config);
+	void InitSceneManager(std::map<std::string, std::string>& config);
+	void InitEnemyManager(std::map<std::string, std::string>& config);
 };
