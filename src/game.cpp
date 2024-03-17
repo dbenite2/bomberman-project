@@ -65,7 +65,13 @@ void Game::InitPlayerManager(std::map<std::string, std::string>& config) {
 }
 
 void Game::InitSceneManager(std::map<std::string, std::string>& config) {
-	m_sceneManager =std::make_unique<SceneManager>(m_assetManager.GetTexture(config["map_brick_texture_name"]), m_assetManager.GetTexture(config["map_solid_texture_name"]), m_assetManager.GetTexture(config["map_grass_texture_name"]));
+	const size_t rows = std::stoi(config["map_rows"]);
+	const size_t columns = std::stoi(config["map_columns"]);
+	const int tileWidth = std::stoi(config["map_tile_width"]);
+	const int tileHeight = std::stoi(config["map_tile_height"]);
+	m_sceneManager =std::make_unique<SceneManager>(m_assetManager.GetTexture(config["map_brick_texture_name"]),
+		m_assetManager.GetTexture(config["map_solid_texture_name"]),
+		m_assetManager.GetTexture(config["map_grass_texture_name"]), rows, columns, tileWidth, tileHeight);
 }
 
 void Game::InitEnemyManager(std::map<std::string, std::string>& config) {

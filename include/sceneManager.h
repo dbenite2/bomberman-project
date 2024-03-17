@@ -4,7 +4,7 @@
 
 class SceneManager {
 public:
-	SceneManager(sf::Texture& destroyableBlock, sf::Texture& nonDestroyableBlock, sf::Texture& walkableBlock);
+	SceneManager(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock, const sf::Texture& walkableBlock, const size_t& rows, const size_t& columns, const int& tileWidth, const int& tileHeight);
 	void Update(const float& deltaMS);
 	void Render(sf::RenderWindow& renderWindow);
 	std::vector<sf::Vector2i> UpdateTileState(const sf::Vector2f bombPosition) const;

@@ -1,8 +1,7 @@
 #include "sceneManager.h"
 
-SceneManager::SceneManager(sf::Texture& destroyableBlock, sf::Texture& nonDestroyableBlock,
-	sf::Texture& walkableBlock) {
-	m_scenes = std::make_unique<Scene>(destroyableBlock, nonDestroyableBlock, walkableBlock);
+SceneManager::SceneManager(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock, const sf::Texture& walkableBlock, const size_t& rows, const size_t& columns, const int& tileWidth, const int& tileHeight) {
+	m_scenes = std::make_unique<Scene>(destroyableBlock, nonDestroyableBlock, walkableBlock, rows, columns, tileWidth, tileHeight);
 }
 
 void SceneManager::Update(const float& deltaMS) {

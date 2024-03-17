@@ -19,8 +19,6 @@ Player::Player(const sf::Texture& texture, const float& spriteScale, const sf::V
 }
 
 void Player::Update(const float& deltaTime) {
-	// TODO: set player behaviour
-
 	if (m_died) {
 		currentAnimation = m_speed != 0.f ? AnimationIndex::Dead : AnimationIndex::IdleDead;
 		m_direction = sf::Vector2f(0.f, 0.f);

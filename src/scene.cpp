@@ -3,16 +3,10 @@
 #include <iostream>
 #include <random>
 
-size_t Scene::m_rows{19};
-size_t Scene::m_columns{29};
-
 std::mt19937_64 mt(std::random_device{}());
 std::uniform_int_distribution<int>dist(2,3);
 
-constexpr int tile_width{63};
-constexpr int tile_height{53}; 
-
-Scene::Scene(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock, const sf::Texture& walkableBlock) {
+Scene::Scene(const sf::Texture& destroyableBlock, const sf::Texture& nonDestroyableBlock, const sf::Texture& walkableBlock, const size_t& rows, const size_t& columns, const int& tileWidth, const int& tileHeight) : m_rows(rows), m_columns(columns), m_tileWidth(tileWidth), m_tileHeight(tileHeight) {
 	m_destroyableBlock.setTexture(destroyableBlock);
 	m_nonDestroyableBlock.setTexture(nonDestroyableBlock);
 	m_walkableBlock.setTexture(walkableBlock);
@@ -37,15 +31,15 @@ void Scene::GenerateMatrix() const {
 	for (size_t i = 0; i< m_rows; i++) {
 		for(size_t j = 0; j < m_columns; j++) {
 			if (i == 0 || j == 0 || i == m_rows - 1 || j == m_columns - 1) {
-				m_gameMatrix[i][j] = 1; // map border
+				m_gameMatrix[i][j] = m_blockIndex::solid; // map border
 				continue;
 			}
 			if ((i==1 &&(j==1 || j ==2)) || (j == 1 && i == 2)) {
-				m_gameMatrix[i][j] = 0; // initial player position
+				m_gameMatrix[i][j] = m_blockIndex::initial; // initial player position
 				continue;
 			}
 			if (i % 2 == 0 && j % 2 == 0) {
-				m_gameMatrix[i][j] = 1; // static blocks
+				m_gameMatrix[i][j] = m_blockIndex::solid; // static blocks
 				continue;
 			}
 			m_gameMatrix[i][j] = dist(mt); // 2: walkable 3: destroyable
@@ -55,8 +49,8 @@ void Scene::GenerateMatrix() const {
 
 std::vector<sf::Vector2i> Scene::ChangeTileState(const sf::Vector2f bombPosition) const {
 	std::vector<sf::Vector2i> affectedTiles;
-	const int bombTileX = static_cast<int>(bombPosition.x / tile_width);
-	const int bombTileY = static_cast<int>(bombPosition.y / tile_height);
+	const int bombTileX = static_cast<int>(bombPosition.x / m_tileWidth);
+	const int bombTileY = static_cast<int>(bombPosition.y / m_tileHeight);
 
 	const std::vector<std::pair<int, int>> offsets = {
 		{1,0},
@@ -72,8 +66,8 @@ std::vector<sf::Vector2i> Scene::ChangeTileState(const sf::Vector2f bombPosition
 
 		// Ensure the target tile is within the bounds of the game matrix
 		if (targetX >= 0 && targetX < m_columns && targetY >= 0 && targetY < m_rows) {
-			if (m_gameMatrix[targetY][targetX] == 3) { // Assuming '2' represents a destroyable block
-				m_gameMatrix[targetY][targetX] = 2; // Change to walkable space, assuming '0' is walkable
+			if (m_gameMatrix[targetY][targetX] == m_blockIndex::brick) { 
+				m_gameMatrix[targetY][targetX] = m_blockIndex::grass;
 			}
 		}
 	}
@@ -84,8 +78,8 @@ std::vector<sf::Vector2f> Scene::GetValidTiles() const {
 	std::vector<sf::Vector2f> validTiles;
 	for(size_t i = 0; i < m_rows; i++) {
 		for(size_t j = 0; j < m_columns; j++) {
-			if (m_gameMatrix[i][j] == 2) {
-				validTiles.emplace_back(j * tile_width, i * tile_height);
+			if (m_gameMatrix[i][j] == m_blockIndex::grass) {
+				validTiles.emplace_back(j * m_tileWidth, i * m_tileHeight);
 			}
  		}
 	}
@@ -98,36 +92,36 @@ void Scene::Update(const float& deltaTime) {
 }
 
 void Scene::Render(sf::RenderWindow& renderWindow) {
-	float X {0};
-	float Y {0};
+	int X {0};
+	int Y {0};
 	for(size_t i = 0; i < m_rows; i++) {
 		for(size_t j = 0; j < m_columns; j++) {
-			if (m_gameMatrix[i][j] == 0 || m_gameMatrix[i][j] == 2) {
+			if (m_gameMatrix[i][j] == m_blockIndex::initial || m_gameMatrix[i][j] == m_blockIndex::grass) {
 				m_walkableBlock.setPosition(X,Y);
 				renderWindow.draw(m_walkableBlock); // green tile
-			} else if (m_gameMatrix[i][j] == 1) {
+			} else if (m_gameMatrix[i][j] == m_blockIndex::solid) {
 				m_nonDestroyableBlock.setPosition(X,Y);
 				renderWindow.draw(m_nonDestroyableBlock); // static tile
-			} else if (m_gameMatrix[i][j] == 3) {
+			} else if (m_gameMatrix[i][j] == m_blockIndex::brick) {
 				m_destroyableBlock.setPosition(X,Y);
 				renderWindow.draw(m_destroyableBlock); // brick tile
 			}
-			X += tile_width;
+			X += m_tileWidth;
 		}
 		X = 0;
-		Y += tile_height;
+		Y += m_tileHeight;
 	}
 }
 
 bool Scene::IsCollision(const sf::FloatRect& bounds) const {
-	const size_t leftTile = static_cast<int> (bounds.left) / tile_width;
-	const size_t rightTile = (static_cast<int>(bounds.left) + static_cast<int> (bounds.width)) / tile_width;
-	const size_t topTile = static_cast<int> (bounds.top) / tile_height;
-	const size_t bottomTile = (static_cast<int> (bounds.top) + static_cast<int> (bounds.height)) / tile_height;
+	const size_t leftTile = static_cast<int> (bounds.left) / m_tileWidth;
+	const size_t rightTile = (static_cast<int>(bounds.left) + static_cast<int> (bounds.width)) / m_tileWidth;
+	const size_t topTile = static_cast<int> (bounds.top) / m_tileHeight;
+	const size_t bottomTile = (static_cast<int> (bounds.top) + static_cast<int> (bounds.height)) / m_tileHeight;
 	for(size_t y = topTile; y <= bottomTile; y++) {
 		for(size_t x = leftTile; x <= rightTile; x++) {
 			if (x < m_columns && y < m_rows) {
-				if (m_gameMatrix[y][x] == 1 || m_gameMatrix[y][x] == 3) {
+				if (m_gameMatrix[y][x] == m_blockIndex::solid || m_gameMatrix[y][x] == m_blockIndex::brick) {
 					return true; // Collision detected
 				}
 			}
