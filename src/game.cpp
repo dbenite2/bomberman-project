@@ -75,5 +75,10 @@ void Game::InitSceneManager(std::map<std::string, std::string>& config) {
 }
 
 void Game::InitEnemyManager(std::map<std::string, std::string>& config) {
-	m_enemyManager = std::make_unique<EnemyManager>(m_assetManager.GetTexture(config["enemy_texture_name"]), m_sceneManager.get(), m_playerManager.get(), std::stoi(config["enemy_count"]));
+	const size_t difficulty = std::stoi(config["enemy_count"]);
+	const float speed = std::stof(config["enemy_speed"]);
+	const sf::Vector2f spriteDimension{std::stof(config["enemy_sprite_width"]), std::stof(config["enemy_sprite_height"])};
+	const float spriteScale = std::stof(config["enemy_sprite_scale"]);
+	m_enemyManager = std::make_unique<EnemyManager>(m_assetManager.GetTexture(config["enemy_texture_name"]),
+		m_sceneManager.get(),m_playerManager.get(), difficulty, speed, spriteDimension, spriteScale);
 }

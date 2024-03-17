@@ -5,7 +5,7 @@
 
 class Enemy {
 public:
-	Enemy(const sf::Texture& texture, const sf::Vector2f& position, const sf::Vector2f& initialDirection);
+	Enemy(const sf::Texture& texture, const sf::Vector2f& position, const sf::Vector2f& initialDirection, const float& speed, const float& spriteScale);
 	void Update(const float& deltaMS);
 	void Render(sf::RenderWindow& renderWindow) const;
 	void SetDirection(const sf::Vector2f& direction);
@@ -14,11 +14,12 @@ public:
 	sf::Vector2f GetDirection() const;
 	void SetState(bool state);
 	bool IsDead() const;
+	float GetSpeed() const;
 private:
 	sf::Sprite m_sprite;
 	sf::Texture m_texture;
 	sf::Vector2f m_direction{0,0};
-	float m_speed{80.f};
+	float m_speed{0.f};
 	bool m_died{false};
 	Animation* m_animation{nullptr};
 	sf::Vector2f m_targetPosition;

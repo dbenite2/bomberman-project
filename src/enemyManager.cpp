@@ -4,15 +4,11 @@
 
 std::mt19937 EnemyManager::m_rng{std::random_device{}()};
 
-EnemyManager::EnemyManager(const sf::Texture& enemyTexture, SceneManager* sceneManager, PlayerManager* playerManager, size_t difficulty)
-	: m_enemyTexture(enemyTexture), m_sceneManager(sceneManager), m_playerManager(playerManager) {
+EnemyManager::EnemyManager(const sf::Texture& enemyTexture, SceneManager* sceneManager, PlayerManager* playerManager,const size_t difficulty, const float& enemySpeed, const sf::Vector2f& enemySpriteDimension, const float& enemySpriteScale)
+	: m_enemyTexture(enemyTexture), m_sceneManager(sceneManager), m_playerManager(playerManager), m_spriteDimensions({enemySpriteDimension.x * enemySpriteScale, enemySpriteDimension.y * enemySpriteScale}) {
 	for(size_t i = 0; i<= difficulty; i++) {
-		SpawnEnemy();
+		SpawnEnemy(enemySpeed, enemySpriteScale);
 	}
-	// SpawnEnemy();
-	// SpawnEnemy();
-	// SpawnEnemy();
-	// SpawnEnemy();
 }
 
 void EnemyManager::Render(sf::RenderWindow& renderWindow) {
@@ -40,7 +36,7 @@ void EnemyManager::Update(const float& deltaMS) {
 	m_enemies.erase(std::remove_if(m_enemies.begin(), m_enemies.end(), [](const Enemy* e){if (e != nullptr) {return e->IsDead(); }}), m_enemies.end());
 }
 
-void EnemyManager::SpawnEnemy() {
+void EnemyManager::SpawnEnemy(const float& speed, const float& scale) {
 	const std::vector<sf::Vector2f> validPositions = m_sceneManager->GetValidTiles();
     
 	if (validPositions.empty()) {
@@ -52,21 +48,18 @@ void EnemyManager::SpawnEnemy() {
 	const size_t randomIndex = dist(m_rng);
 	
 	const sf::Vector2f randomPosition = validPositions[randomIndex];
-	m_enemies.push_back(new Enemy(m_enemyTexture, randomPosition, PickRandomDirection()));
+	m_enemies.push_back(new Enemy(m_enemyTexture, randomPosition, PickRandomDirection(), speed, scale));
 }
 
 bool EnemyManager::CheckCollisions(Enemy* enemy, const float& deltaTime) {
 	sf::Vector2f direction = enemy->GetDirection();
-	constexpr float width = 16 * 2.5f; // sprite size * scale
-	constexpr float height = 16 * 2.5f;
 	const sf::Vector2f currentPosition = enemy->GetPosition();
-	const float speed = 80.f; // should use the class speed instead, testing purposes;
 
 	const float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 	direction /= length;
-	const sf::Vector2f newPosition = currentPosition + (direction * speed * deltaTime);
+	const sf::Vector2f newPosition = currentPosition + (direction * enemy->GetSpeed() * deltaTime);
 		
-	const sf::FloatRect proposedBounds(newPosition.x, newPosition.y, width, height);
+	const sf::FloatRect proposedBounds(newPosition.x, newPosition.y, m_spriteDimensions.x, m_spriteDimensions.y);
 	return m_sceneManager->IsCollision(proposedBounds);
 }
 
@@ -74,8 +67,6 @@ sf::Vector2f EnemyManager::PickRandomDirection() {
 	std::uniform_int_distribution<int> dist(0, 3); // 0: Up, 1: Right, 2: Down, 3: Left
 	int dir = dist(m_rng);
 	switch (dir) {
-	// case 0: return sf::Vector2f(-1.f, 0.f);
-	// case 1: return sf::Vector2f(1.f, 0.f);
 	case 0: return sf::Vector2f(0.f, -1.f);
 	case 1: return sf::Vector2f(1.f, 0.f);
 	case 2: return sf::Vector2f(0.f, 1.f);
@@ -90,8 +81,6 @@ bool EnemyManager::IsInBombRadius(Enemy* enemy) {
 	for(auto* bomb : m_playerManager->GetBombsPositions()) {
 		if (bomb && bomb->IsExploded()) {
 			const sf::Vector2f& bombPos = bomb->GetBombPosition();
-
-			// Calculate the distance between bomb and enemy in terms of tiles, not pixels
 			int tileDistanceX = std::abs(static_cast<int>((bombPos.x - enemyPositionX) / 63));
 			int tileDistanceY = std::abs(static_cast<int>((bombPos.y - enemyPositionY) / 53));
 
